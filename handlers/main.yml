@@ -72,3 +72,7 @@
 - name: Update GRUB
   ansible.builtin.command: update-grub
   changed_when: false
+
+- name: Proxmox Boot Tool Refresh
+  ansible.builtin.command: proxmox-boot-tool refresh
+  changed_when: false
