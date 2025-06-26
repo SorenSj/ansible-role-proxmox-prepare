@@ -4,102 +4,98 @@
   gather_facts: false
   tasks:
     - name: Init
-      ansible.builtin.include:
-        name: 00_init
+      ansible.builtin.include_tasks:
+        file: init.yml
 
     - name: Backup etc
-      ansible.builtin.include_role:
-        name: 01_backup_etc
+      ansible.builtin.include_tasks:
+        file: backup_etc.yml
 
     - name: Date timezone
-      ansible.builtin.include_role:
-        name: 02_date_timezone
+      ansible.builtin.include_tasks:
+        file: date_timezone.yml
 
     - name: Prepare repos
-      ansible.builtin.include_role:
-        name: 03_prepare_repos
+      ansible.builtin.include_tasks:
+        file: prepare_repos.yml
 
     - name: Install software
-      ansible.builtin.include_role:
-        name: 04_install_software
+      ansible.builtin.include_tasks:
+        file: install_software.yml
 
     - name: Run role for init sshd user
-      ansible.builtin.include_role:
-        name: 05_init_sshd
+      ansible.builtin.include_tasks:
+        file: init_sshd_user.yml
 
     - name: Сonfigure-users
-      ansible.builtin.include_role:
-        name: 06_configure_users
+      ansible.builtin.include_tasks:
+        file: configure_users.yml
 
     - name: Configure-bash
-      ansible.builtin.include_role:
-        name: 07_configure_bash
+      ansible.builtin.include_tasks:
+        file: configure_bash.yml
 
     - name: Prepare system
-      ansible.builtin.include_role:
-        name: 08_prepare_system
+      ansible.builtin.include_tasks:
+        file: prepare_system.yml
 
     - name: Configure-network
-      ansible.builtin.include_role:
-        name: 09_configure_network
+      ansible.builtin.include_tasks:
+        file: configure_network.yml
 
     - name: Configure-zfs
-      ansible.builtin.include_role:
-        name: 10_configure_zfs
+      ansible.builtin.include_tasks:
+        file: configure_zfs.yml
 
     - name: Configure-proxmox
-      ansible.builtin.include_role:
-        name: 11_configure_proxmox
+      ansible.builtin.include_tasks:
+        file: configure_proxmox.yml
 
     - name: Enable pcie-passthrough
-      ansible.builtin.include_role:
-        name: 12_pcie_passthrough
+      ansible.builtin.include_tasks:
+        file: pcie_passthrough.yml
 
     - name: Configure ksmtuned
-      ansible.builtin.include_role:
-        name: 13_ksmtuned
+      ansible.builtin.include_tasks:
+        file: ksmtuned.yml
 
     - name: Ram disk
-      ansible.builtin.include_role:
-        name: 14_create_ramdisk
+      ansible.builtin.include_tasks:
+        file: create_ramdisk.yml
 
     - name: Set cpu performance
-      ansible.builtin.include_role:
-        name: 15_cpu_performance
+      ansible.builtin.include_tasks:
+        file: cpu_performance.yml
 
     - name: Web show temperatures
-      ansible.builtin.include_role:
-        name: 16_web_temp_sensors
+      ansible.builtin.include_tasks:
+        file: web_temp_sensors.yml
 
     - name: Kernel pinning
-      ansible.builtin.include_role:
-        name: 17_pin_kernel
+      ansible.builtin.include_tasks:
+        file: pin_kernel.yml
 
     - name: Fail2ban
-      ansible.builtin.include_role:
-        name: 18_fail2ban
+      ansible.builtin.include_tasks:
+        file: fail2ban.yml
 
     - name: Nested virtualization
-      ansible.builtin.include_role:
-        name: 19_nested_virtualization
+      ansible.builtin.include_tasks:
+        file: nested_virtualization.yml
 
     - name: Enable nginx
-      ansible.builtin.include_role:
-        name: 20_nginx
+      ansible.builtin.include_tasks:
+        file: nginx.yml
 
     - name: Move logs to tmpfs
-      ansible.builtin.include_role:
-        name: 21_logs_tmpfs
+      ansible.builtin.include_tasks:
+        file: logs_tmpfs.yml
 
     - name: Update system
-      ansible.builtin.include_role:
-        name: 99_update_reboot
+      ansible.builtin.include_tasks:
+        file: update_reboot.yml
 
   handlers:
     - name: Update GRUB
       ansible.builtin.command: update-grub
-      changed_when: false
-
-    - name: Proxmox Boot Tool Refresh
-      ansible.builtin.command: proxmox-boot-tool refresh
       changed_when: false
