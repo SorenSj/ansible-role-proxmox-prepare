@@ -68,3 +68,7 @@
     state: restarted
     enabled: true
   when: nginx_enable | default(false)
+
+- name: Update GRUB
+  ansible.builtin.command: update-grub
+  changed_when: false
