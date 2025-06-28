@@ -1,101 +1,128 @@
 ---
 - name: Prepare proxmox
-  hosts: all
-  gather_facts: false
   tasks:
-    - name: Init
-      ansible.builtin.include_tasks:
-        file: init.yml
+    - block:
+      - name: Bootstrap
+        ansible.builtin.include_tasks:
+          file: bootstrap.yml
+        tags: bootstrap
 
-    - name: Backup etc
-      ansible.builtin.include_tasks:
-        file: backup_etc.yml
+      - name: Initialize
+        ansible.builtin.include_tasks:
+          file: init.yml
+        tags: init
 
-    - name: Date timezone
-      ansible.builtin.include_tasks:
-        file: date_timezone.yml
+      - name: Backup etc
+        ansible.builtin.include_tasks:
+          file: backup_etc.yml
+        tags: backup_etc
 
-    - name: Prepare repos
-      ansible.builtin.include_tasks:
-        file: prepare_repos.yml
+      - name: Date timezone
+        ansible.builtin.include_tasks:
+          file: date_timezone.yml
+        tags: date_timezone
 
-    - name: Install software
-      ansible.builtin.include_tasks:
-        file: install_software.yml
+      - name: Configure keyboard
+        ansible.builtin.include_tasks:
+          file: configure_keyboard.yml
+        tags: keyboard
 
-    - name: Run role for init sshd user
-      ansible.builtin.include_tasks:
-        file: init_sshd_user.yml
+      - name: Prepare repos
+        ansible.builtin.include_tasks:
+          file: prepare_repos.yml
+        tags: repositories, software
 
-    - name: Сonfigure-users
-      ansible.builtin.include_tasks:
-        file: configure_users.yml
+      - name: Install software
+        ansible.builtin.include_tasks:
+          file: install_software.yml
+        tags: software
 
-    - name: Configure-bash
-      ansible.builtin.include_tasks:
-        file: configure_bash.yml
+      - name: Run role for init sshd user
+        ansible.builtin.include_tasks:
+          file: init_sshd_user.yml
+        tags: init_sshd, users
 
-    - name: Prepare system
-      ansible.builtin.include_tasks:
-        file: prepare_system.yml
+      - name: Configure-users
+        ansible.builtin.include_tasks:
+          file: configure_users.yml
+        tags: users
 
-    - name: Configure-network
-      ansible.builtin.include_tasks:
-        file: configure_network.yml
+      - name: Configure-bash
+        ansible.builtin.include_tasks:
+          file: configure_bash.yml
+        tags: bash, users
 
-    - name: Configure-zfs
-      ansible.builtin.include_tasks:
-        file: configure_zfs.yml
+      - name: Prepare system
+        ansible.builtin.include_tasks:
+          file: prepare_system.yml
+        tags: system
 
-    - name: Configure-proxmox
-      ansible.builtin.include_tasks:
-        file: configure_proxmox.yml
+      - name: Configure-network
+        ansible.builtin.include_tasks:
+          file: configure_network.yml
+        tags: network
 
-    - name: Enable pcie-passthrough
-      ansible.builtin.include_tasks:
-        file: pcie_passthrough.yml
+      - name: Configure-zfs
+        ansible.builtin.include_tasks:
+          file: configure_zfs.yml
+        tags: zfs
 
-    - name: Configure ksmtuned
-      ansible.builtin.include_tasks:
-        file: ksmtuned.yml
+      - name: Configure-proxmox
+        ansible.builtin.include_tasks:
+          file: configure_proxmox.yml
+        tags: proxmox
 
-    - name: Ram disk
-      ansible.builtin.include_tasks:
-        file: create_ramdisk.yml
+      - name: Enable pcie-passthrough
+        ansible.builtin.include_tasks:
+          file: pcie_passthrough.yml
+        tags: pcie_passthrough
 
-    - name: Set cpu performance
-      ansible.builtin.include_tasks:
-        file: cpu_performance.yml
+      - name: Configure ksmtuned
+        ansible.builtin.include_tasks:
+          file: ksmtuned.yml
+        tags: ksmtuned, memory, cpu
 
-    - name: Web show temperatures
-      ansible.builtin.include_tasks:
-        file: web_temp_sensors.yml
+      - name: Ram disk
+        ansible.builtin.include_tasks:
+          file: create_ramdisk.yml
+        tags: ramdisk, ramfs
 
-    - name: Kernel pinning
-      ansible.builtin.include_tasks:
-        file: pin_kernel.yml
+      - name: Set cpu performance
+        ansible.builtin.include_tasks:
+          file: cpu_performance.yml
+        tags: cpu_performance, cpu
 
-    - name: Fail2ban
-      ansible.builtin.include_tasks:
-        file: fail2ban.yml
+      - name: Web show temperatures
+        ansible.builtin.include_tasks:
+          file: web_temp_sensors.yml
+        tags: web_temp_sensors, cpu
 
-    - name: Nested virtualization
-      ansible.builtin.include_tasks:
-        file: nested_virtualization.yml
+      - name: Kernel pinning
+        ansible.builtin.include_tasks:
+          file: pin_kernel.yml
+        tags: kernel, cpu
 
-    - name: Enable nginx
-      ansible.builtin.include_tasks:
-        file: nginx.yml
+      - name: Fail2ban
+        ansible.builtin.include_tasks:
+          file: fail2ban.yml
+        tags: fail2ban, software
 
-    - name: Move logs to tmpfs
-      ansible.builtin.include_tasks:
-        file: logs_tmpfs.yml
+      - name: Nested virtualization
+        ansible.builtin.include_tasks:
+          file: nested_virtualization.yml
+        tags: nested_virtualization
 
-    - name: Update system
-      ansible.builtin.include_tasks:
-        file: update_reboot.yml
+      - name: Enable nginx
+        ansible.builtin.include_tasks:
+          file: nginx.yml
+        tags: nginx
 
-  handlers:
-    - name: Update GRUB
-      ansible.builtin.command: update-grub
-      changed_when: false
+      - name: Move logs to tmpfs
+        ansible.builtin.include_tasks:
+          file: logs_tmpfs.yml
+        tags: logs
+
+      - name: Update system
+        ansible.builtin.include_tasks:
+          file: update_reboot.yml
+        tags: update_system, software
