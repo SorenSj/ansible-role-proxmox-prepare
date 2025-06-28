@@ -1,0 +1,39 @@
+---
+- name: Prepare a host to run ansible
+  block:
+    - name: Check if connection is possible
+      command: ssh {{ ansible_ssh_extra_args | default('') }} -o User={{ ansible_user }} -o ConnectTimeout=10 -o PreferredAuthentications=publickey -o PubkeyAuthentication=yes {{ ansible_host }} /bin/true
+      register: result
+      connection: local
+      ignore_errors: true
+      changed_when: false
+
+    - name: If no connection, try using our first run credentials
+      set_fact:
+        using_first_run: true
+        ansible_user: "{{ ansible_user_first_run }}"
+        ansible_ssh_pass: "{{ ansible_pass_first_run }}"
+        ansible_become_pass: "{{ ansible_pass_first_run }}"
+      when: result is failed
+
+    # since any_errors_fatal this should fail the play if we still cannot connect
+    # with either the first_run creds or keys/certs.
+    - name: Check if connection is possible
+      ansible.builtin.raw: /bin/true
+      changed_when: false
+      when:
+        - result is failed
+
+- name: Install sudo and other prerequisites
+  block:
+    - name: Install sudo package
+      ansible.builtin.apt:
+        name: sudo
+        state: present
+
+    - name: Install prerequisites packages
+      ansible.builtin.apt:
+        name: python3,sudo,gnupg,python3-apt
+        update_cache: false
+      when: ansible_virtualization_type != 'docker'
+      register: bootstrap_packages
