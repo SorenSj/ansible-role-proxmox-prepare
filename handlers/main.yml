@@ -76,3 +76,11 @@
 - name: Proxmox Boot Tool Refresh
   ansible.builtin.command: proxmox-boot-tool refresh
   changed_when: false
+
+- name: Reconfigure keyboard-configuration
+  ansible.builtin.command: /usr/sbin/dpkg-reconfigure -f noninteractive keyboard-configuration
+  changed_when: false
+
+- name: Reconfigure console-setup
+  ansible.builtin.command: /usr/sbin/dpkg-reconfigure -f noninteractive console-setup
+  changed_when: false
