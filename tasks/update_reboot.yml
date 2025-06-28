@@ -18,9 +18,38 @@
     state: present
   when: system_update_scheduler
 
+- name: Upgrade all packages and reboot if necessary
+  ansible.builtin.apt:
+    upgrade: dist
+    autoremove: yes
+    autoclean: yes
+  register: apt_upgrade_result
+
 - name: Reboot the system if required
   ansible.builtin.reboot:
-    msg: "Rebooting the system after updates."
-    connect_timeout: 5
-    reboot_timeout: 600
-  when: reboot_system and update_system_now
+    msg: "Rebooting after package upgrade"
+  when: 
+    - apt_upgrade_result.reboot_required | default(false)
+    - reboot_system | default(false)
+    - update_system_now | default(false)
+  register: reboot_result
+
+- name: Wait for the system to come back online after reboot
+  ansible.builtin.wait_for_connection:
+    delay: 10
+    timeout: 300
+  when: reboot_result is changed
+
+- name: Ensure Proxmox services are running after reboot
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - pvedaemon
+    - pve-cluster
+    - pve-manager
+    - pveproxy
+    - pvestatd
+  when: reboot_result is changed
+  
