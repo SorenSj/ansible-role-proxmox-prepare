@@ -18,7 +18,9 @@
     state: present
   when: system_update_scheduler
 
-- name: Reboot the system
+- name: Reboot the system if required
   ansible.builtin.reboot:
-    reboot_timeout: 300
-  when: reboot_system
+    msg: "Rebooting the system after updates."
+    connect_timeout: 5
+    reboot_timeout: 600
+  when: reboot_system and update_system_now
