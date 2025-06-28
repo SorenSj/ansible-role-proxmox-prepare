@@ -21,7 +21,7 @@ network_config: |
           bridge-stp off
           bridge-fd 0
 
-# DNS servers          
+# DNS servers
 dns_servers:
   - 8.8.8.8 # Primary DNS server.
   - 8.8.4.4 # Secondary DNS server.
@@ -43,10 +43,11 @@ disable_password_auth: false # Disable password-based SSH authentication.
 pub_keys_folder: pub_keys/ # Folder containing public SSH keys.
 
 # Set timezone and NTP servers
-timezone: Europe/Berlin # Set the system timezone.
+timezone: Europe/Copenhagen # Set the system timezone.
 ntp_servers:
-  - 2.pfsense.pool.ntp.org # Primary NTP server.
-  - 1.pfsense.pool.ntp.org # Tertiary NTP server.
+  - 0.dk.pool.ntp.org # Primary NTP server.
+  - 1.dk.pool.ntp.org # Secondary NTP server.
+  - 2.dk.pool.ntp.org # Tertiary NTP server.
 
 # Repository Management
 add_backports_repo: false # Add or remove the Debian backports repository.
@@ -170,6 +171,13 @@ add_locales: false # Enable adding or modifying system locales.
 default_locale: "en_US.UTF-8" # Default system locale.
 additional_locales:
   - "en_US.UTF-8 UTF-8" # Additional locales to generate.
+
+# Configure keyboard settings
+keyboard_model: "pc105" # Keyboard model (e.g., pc105, pc104).
+keyboard_layout: "us" # Keyboard layout (e.g., us, de).
+keyboard_variant: "" # Keyboard variant (e.g., dvorak, colemak).
+keyboard_options: "" # Additional keyboard options (e.g., ctrl:nocaps).
+keyboard_encoding: "UTF-8" # Keyboard encoding (e.g., UTF-8, ISO-8859-1).
 
 # User-friendly Bash
 configure_bash: true # Enable custom Bash configurations.
